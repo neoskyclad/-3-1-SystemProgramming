@@ -1,0 +1,16 @@
+시프과제3
+- 문제점 & 해결방법
+1. fopen() 함수 구현
+ - 내가 만든 myFile을 리턴해야 되는데 file->fd로 fd를 넣을 때 segmentation fault가 떴다.
+ - 알고보니 malloc을 안해서 생긴 문제 ㅋㅋ
+
+2. fread() 함수 구현
+ - 자꾸 -1 에러가 뜸 read()를 통해서 구현
+ - file->fd로 안넣음 ㅋㅋ
+
+3. 버퍼링 구현 문제
+- 처음엔 단순 wrapper 함수를 구현했음
+- 버퍼링을 구현하기 위해 고민
+
+4. myfread()를 수행하니까 또 write되는 문제
+- fflush로 해결

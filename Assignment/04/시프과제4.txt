@@ -1,0 +1,51 @@
+시프과제4
+0. 프로그램 해석
+
+전역 변수 (스레드 간 공유)
+primes[3000]
+pflag[3000]
+total
+
+main()
+tids 스레드 3000개 생성
+flag 3000개 1로 초기화
+for문에서 work(i)를 실행하는 스레드 3000개 생성 > i는 0 ~ 2998?
+for문 끝나면 work(2999) 스레드 실행
+
+work() > O(n^2)
+총 스레드 / 돌릴 스레드 개수 (3000 / 4 = 750) * arg (확인할 소수)
+
+is_prime()
+소수인지 판별 > 2부터 일일이 나눠가며 판별하는 O(n) 방식
+arg부터 bound까지 for문 돌리기 (pflag가 0이면(소수가 아니면) 무시, 만약에 나눠떨어지면 pflag 0으로 설정)
+
+2 ~ 3000까지 소수 몇개(total)인지 printf
+total 개수만큼 소수 printf (2, 3, 5, 7, ...)
+
+1. 어디서 race condition 발생하는지? > 몰랐다
+- 3000개 스레드 돌리기 > is_prime(): 소수인지 판별
+- work를 스레드로 concurrent하게 실행하는데, primes 전역 변수에 접근하면서 race condition 발생할듯
+work()
+if (is_prime(i) > primes[total] = i; total++; 이 부분이 Critical Section
+
+is_prime()
+if (v % i == 0) > pflag[v] = 0; return 0; 이 부분이 CS
+
+2. Mutex
+- mutex 전역으로 선언
+- thread_ids[] > race condition 해결
+- join
+
+3. Semaphore
+- counting semaphore > Critical Section에 하나만 들어와야 하므로 Binary로 수정했다.
+(430을 보장하기가 힘들어서)
+
+4. Conditional Variables
+- 사용 방법에 대한 고찰
+ - cv를 사용할 때 wait과 signal을 주로 사용하게 됨
+ > critical section에 들어갈 때 다른 스레드 모두 wait하게 함 > 접근 작업이 끝나면 signal 보냄 > signal 받으면 critical section 접근
+
+5. Makefile
+gcc -o "filename" "filename.c" -lm
+- 한 번에 3개의 컴파일을 해야되는데 하나 씩밖에 되지 않았다.
+all: 명령어를 통해 make 한 번에 3개의 컴파일 성공                                                     
